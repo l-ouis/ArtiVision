@@ -8,8 +8,6 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-
-
 def load_img(path_to_img):
     max_dim = 512
     img = tf.io.read_file(path_to_img)
@@ -64,11 +62,6 @@ def load_and_preprocess_images(csv_path, dataset_path):
 # Usage example
 csv_path = '/Users/zi/Desktop/ArtiVision/data/wikiart_art_pieces.csv'
 dataset_path = 'data/wikiart/wikiart'  
-
-
-
-    
-    
 images, labels, classes = load_and_preprocess_images(csv_path, dataset_path)
 
 #Split the data into training and validation sets

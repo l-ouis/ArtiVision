@@ -75,8 +75,6 @@ class Datasets():
 
         return img
 
-
-
     def preprocess_fn(self, img):
         """ Custom preprocess function for ImageDataGenerator. """
         if self.model_choice == '2':
