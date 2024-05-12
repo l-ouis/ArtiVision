@@ -1,0 +1,81 @@
+import os
+import tensorflow as tf
+import numpy as np
+import pandas as pd
+
+# Visualization tools
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+
+
+def load_img(path_to_img):
+    max_dim = 512
+    img = tf.io.read_file(path_to_img)
+    img = tf.image.decode_image(img, channels=3)
+    img = tf.image.convert_image_dtype(img, tf.float32)
+    
+    shape = tf.cast(tf.shape(img)[:-1], tf.float32)
+    long_dim = max(shape)
+    scale = max_dim / long_dim
+    
+    new_shape = tf.cast(shape * scale, tf.int32)
+    
+    img = tf.image.resize(img, new_shape)
+    img = img[tf.newaxis, :]
+    return img
+
+
+def load_and_preprocess_images(csv_path, dataset_path):
+    # Load the CSV file
+    df = pd.read_csv(csv_path)
+    
+    # Initialize lists to hold images and labels
+    images = []
+    styles = []
+
+    # Iterate over the rows of the DataFrame
+    for index, row in df.iterrows():
+        image_path = os.path.join(dataset_path, row['file_name'])
+        style_label = row['style']
+        
+        try:
+            # Load the image
+            img = load_img(image_path)
+            # Append the image and style to the lists
+            images.append(img)
+            styles.append(style_label)
+            print(f"Loaded image {image_path}")
+            print(index)
+        
+        except Exception as e:
+            print(f"Error loading image {image_path}: {e}")
+            continue
+    
+    # Encode the labels
+    label_encoder = LabelEncoder()
+    labels = label_encoder.fit_transform(styles)
+    labels = tf.one_hot(labels, depth=len(label_encoder.classes_))
+    
+    return np.array(images, dtype=np.float32), labels, label_encoder.classes_
+    
+
+# Usage example
+csv_path = '/Users/zi/Desktop/ArtiVision/data/wikiart_art_pieces.csv'
+dataset_path = 'data/wikiart/wikiart'  
+
+
+
+    
+    
+images, labels, classes = load_and_preprocess_images(csv_path, dataset_path)
+
+#Split the data into training and validation sets
+X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.4, random_state=42)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+
+print(f'Training data: {X_train.shape}, {y_train.shape}')
+print(f'Validation data: {X_val.shape}, {y_val.shape}')
+print(f'Test data: {X_test.shape}, {y_test.shape}')
+print(f'Classes: {classes}')
