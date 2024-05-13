@@ -114,6 +114,8 @@ def main():
         metrics=['accuracy']
     )
 
+    model.build((None, 224, 224, 3))
+
     print(model.summary())
     
     # Train model
