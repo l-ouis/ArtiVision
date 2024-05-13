@@ -1,14 +1,20 @@
 import os
 import random
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFile
 import tensorflow as tf
 
 import hyperparameters as hp
 
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+Image.LOAD_TRUNCATED_IMAGES = True
+
 class Datasets():
 
     def __init__(self, data_path, model):
+        
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+        Image.LOAD_TRUNCATED_IMAGES = True
 
         self.data_path = data_path
         self.model_choice= model
