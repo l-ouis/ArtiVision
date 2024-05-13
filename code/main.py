@@ -7,7 +7,7 @@ import tensorflow as tf
 from tqdm.keras import TqdmCallback
 
 import hyperparameters as hp
-from models import Basic, Advanced
+from models import Basic, Advanced, ArtistPredictor
 from preprocess import Datasets
 
 
@@ -69,8 +69,8 @@ def parse_args():
 )
     parser.add_argument(
         'model_choice',
-        choices=['1', '2'],
-        help='1=basic model, 2=advanced model'
+        choices=['1', '2', '3'],
+        help='1=basic model, 2=advanced model, 3=artist predictor'
     )
     
     parser.add_argument(
@@ -104,8 +104,10 @@ def main():
     # Select model
     if args.model_choice == '1':
         model = Basic()
-    else:
+    elif args.model_choice == '2':
         model = Advanced()
+    elif args.model_choice == '3':
+        model = ArtistPredictor()
     
     # Compile model
     model.compile(

@@ -45,4 +45,4 @@ batch_size = 32
 """
 The number of image scene classes. Don't change this.
 """
-num_classes = 193
+num_classes = 124

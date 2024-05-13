@@ -19,7 +19,7 @@ os.makedirs(output_dir, exist_ok=True)
 # Group images by their style
 for index, row in df.iterrows():
     image_name = row['file_name']
-    style = row['style']
+    style = row['movement']
     
     style_dir = os.path.join(output_dir, style)
     os.makedirs(style_dir, exist_ok=True)

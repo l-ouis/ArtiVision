@@ -39,7 +39,7 @@ class Basic(tf.keras.Model):
               tf.keras.layers.Dropout(0.3),
               tf.keras.layers.Dense(128, activation='relu'),
               tf.keras.layers.Dropout(0.3),
-              tf.keras.layers.Dense(193, activation='softmax')
+              tf.keras.layers.Dense(hp.num_classes, activation='softmax')
         ]
 
     def call(self, x):
@@ -111,7 +111,7 @@ class Advanced(tf.keras.Model):
         self.head = [
             tf.keras.layers.Flatten(), 
             tf.keras.layers.Dense(512, activation="relu"), 
-            tf.keras.layers.Dense(193, activation="softmax")
+            tf.keras.layers.Dense(hp.num_classes, activation="softmax")
         ]
 
         # self.vgg19 = tf.keras.Sequential(self.vgg19, name="vgg_base")
@@ -131,3 +131,66 @@ class Advanced(tf.keras.Model):
 
         return tf.keras.losses.SparseCategoricalCrossentropy()(labels, predictions)
       
+class ArtistPredictor(tf.keras.Model):
+    """ Predicts artist given a painting and a style prediction. """
+
+    def __init__(self):
+        super(Basic, self).__init__()
+
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate=hp.learning_rate)
+        self.cnn = [
+            tf.keras.layers.Conv2D(32, 3, 1, activation='relu', padding='same', input_shape=(hp.img_size, hp.img_size, 3)),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Conv2D(32, 3, 1, padding="same",
+                activation="relu"),
+            tf.keras.layers.MaxPool2D(2),
+
+            tf.keras.layers.Conv2D(128, 3, 1, activation='relu', padding='same'),
+            tf.keras.layers.Conv2D(128, 3, 1, padding="same",
+                activation="relu"),
+            tf.keras.layers.MaxPool2D(2),
+
+            tf.keras.layers.Conv2D(256, 3, 1, activation='relu', padding='same'),
+            tf.keras.layers.Conv2D(256, 3, 1, activation='relu', padding='same'),
+            tf.keras.layers.MaxPool2D(pool_size=(2, 2)),
+
+            tf.keras.layers.Conv2D(512, 3, 1, padding="same",
+                activation="relu"),
+            tf.keras.layers.Conv2D(512, 3, 1, padding="same",
+                activation="relu"),
+
+            tf.keras.layers.Flatten(),
+        ]
+
+        self.style_body = [
+            tf.keras.layers.Dense(32, activation='relu'),
+            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(64, activation='relu'),
+        ]
+
+        self.head = [
+            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(hp.num_classes, activation='softmax')
+        ]
+        self.cnn = tf.keras.Sequential(self.cnn, name="cnn")
+        self.style_body = tf.keras.Sequential(self.style_body, name="style_body")
+        self.head = tf.keras.Sequential(self.head, name="head")
+
+    def call(self, x):
+        """ Passes input image through the network. """
+
+        x1 = self.cnn(x)
+        x2 = self.style_body(x)
+        x = tf.keras.layers.Concatenate()([x1, x2])
+        x = self.head(x)
+
+        return x
+
+    @staticmethod
+    def loss_fn(labels, predictions):
+        """ Loss function for the model. """
+
+        return tf.keras.losses.SparseCategoricalCrossentropy()(labels, predictions)
