@@ -9,7 +9,7 @@ Number of epochs. We as you to use only 50 epochs as your budget.
 For extra credit, if you experiment with more complex networks, you
 can change this.
 """
-num_epochs = 50
+num_epochs = 8
 
 """
 A critical parameter that can dramatically affect whether training
@@ -40,7 +40,7 @@ preprocess_sample_size = 1000
 Defines the number of training examples per batch.
 You don't need to modify this.
 """
-batch_size = 10
+batch_size = 32
 
 """
 The number of image scene classes. Don't change this.
