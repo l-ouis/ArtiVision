@@ -64,37 +64,49 @@ class Advanced(tf.keras.Model):
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=hp.learning_rate)
 
         # VGG19 architecture
-        self.vgg19 = [
-            # Block 1
-            tf.keras.layers.Conv2D(64, 3, 1, padding="same", activation="relu", name="block1_conv1"),
-            tf.keras.layers.Conv2D(64, 3, 1, padding="same", activation="relu", name="block1_conv2"),
-            tf.keras.layers.MaxPool2D(2, name="block1_pool"),
-            # Block 2
-            tf.keras.layers.Conv2D(128, 3, 1, padding="same", activation="relu", name="block2_conv1"),
-            tf.keras.layers.Conv2D(128, 3, 1, padding="same", activation="relu", name="block2_conv2"),
-            tf.keras.layers.MaxPool2D(2, name="block2_pool"),
-            # Block 3
-            tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv1"),
-            tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv2"),
-            tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv3"),
-            tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv4"),
-            tf.keras.layers.MaxPool2D(2, name="block3_pool"),
-            # Block 4
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv1"),
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv2"),
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv3"),
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv4"),
-            tf.keras.layers.MaxPool2D(2, name="block4_pool"),
-            # Block 5
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv1"),
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv2"),
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv3"),
-            tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv4"),
-            tf.keras.layers.MaxPool2D(2, name="block5_pool")
-        ]
+        # self.vgg19 = [
+        #     # Block 1
+        #     tf.keras.layers.Conv2D(64, 3, 1, padding="same", activation="relu", name="block1_conv1"),
+        #     tf.keras.layers.Conv2D(64, 3, 1, padding="same", activation="relu", name="block1_conv2"),
+        #     tf.keras.layers.MaxPool2D(2, name="block1_pool"),
+        #     # Block 2
+        #     tf.keras.layers.Conv2D(128, 3, 1, padding="same", activation="relu", name="block2_conv1"),
+        #     tf.keras.layers.Conv2D(128, 3, 1, padding="same", activation="relu", name="block2_conv2"),
+        #     tf.keras.layers.MaxPool2D(2, name="block2_pool"),
+        #     # Block 3
+        #     tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv1"),
+        #     tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv2"),
+        #     tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv3"),
+        #     tf.keras.layers.Conv2D(256, 3, 1, padding="same", activation="relu", name="block3_conv4"),
+        #     tf.keras.layers.MaxPool2D(2, name="block3_pool"),
+        #     # Block 4
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv1"),
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv2"),
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv3"),
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block4_conv4"),
+        #     tf.keras.layers.MaxPool2D(2, name="block4_pool"),
+        #     # Block 5
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv1"),
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv2"),
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv3"),
+        #     tf.keras.layers.Conv2D(512, 3, 1, padding="same", activation="relu", name="block5_conv4"),
+        #     tf.keras.layers.MaxPool2D(2, name="block5_pool")
+        # ]
 
-        for layer in self.vgg19:
-            layer.trainable = False
+        self.vgg19 = tf.keras.applications.vgg19.VGG19(
+            include_top=False,
+            weights="imagenet",
+            input_tensor=None,
+            input_shape=None,
+            pooling="max",
+            classifier_activation="softmax",
+        )
+        
+        self.vgg19.trainable = False
+
+
+        # for layer in self.vgg19:
+        #     layer.trainable = False
 
         self.head = [
             tf.keras.layers.Flatten(), 
@@ -102,7 +114,7 @@ class Advanced(tf.keras.Model):
             tf.keras.layers.Dense(193, activation="softmax")
         ]
 
-        self.vgg19 = tf.keras.Sequential(self.vgg19, name="vgg_base")
+        # self.vgg19 = tf.keras.Sequential(self.vgg19, name="vgg_base")
         self.head = tf.keras.Sequential(self.head, name="vgg_head")
 
     def call(self, x):

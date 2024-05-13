@@ -113,6 +113,8 @@ def main():
         loss=model.loss_fn,
         metrics=['accuracy']
     )
+
+    print(model.summary())
     
     # Train model
     model.fit(
@@ -125,6 +127,9 @@ def main():
     # Evaluate model
     results = model.evaluate(datasets.test_data)
     print(f'Test Loss: {results[0]}, Test Accuracy: {results[1]}')
+
+    # Save the trained model
+    model.save('saved_model/my_model', save_format="tf")
     
 
 
