@@ -98,6 +98,7 @@ print(filenames, stylelist)
 os.makedirs(output_dir, exist_ok=True)
 
 top5_style_ids_total = [] # Let's store the top 5 styles of each painting so we can do more viz with PCA
+top5_style_ids_result = []
 total_guesses = 0
 total_correct = 0
 
@@ -148,7 +149,10 @@ for image_name, style in zip(filenames, stylelist):
                         break
                 total_guesses += 1
                 if correct:
+                    top5_style_ids_result.append(1)
                     total_correct += 1
+                else:
+                    top5_style_ids_result.append(0)
             except:
                 print(f'Image {image_name} unable to predict')
 
@@ -181,4 +185,5 @@ print(f'Correct: {total_correct} / {total_guesses}')
 
 with open('gen_data/top5_style_ids_total.pkl', 'wb') as f:
     pickle.dump(top5_style_ids_total, f)
-
+with open('gen_data/top5_style_ids_result.pkl', 'wb') as f:
+    pickle.dump(top5_style_ids_result, f)
