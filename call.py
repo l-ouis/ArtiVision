@@ -6,6 +6,7 @@ import numpy as np
 import sys
 sys.path.append('code')
 import hyperparameters as hp
+from models import Basic, Advanced
 
 # just minimize this definition
 styles = [
@@ -57,16 +58,13 @@ styles = [
 ]
 
 
-# Load the Keras model
-model = tf.keras.models.load_model('saved_models/model')
+# Load the Keras model - need to load in the loss fn as well
+model = tf.keras.models.load_model('saved_models/my_model', custom_objects={'loss_fn': Basic.loss_fn})
 
 
-# Path to the test image
-test_image_path = 'test_images/image'
+test_image_path = 'test_images/mountains.jpeg'
 
-# Check if the image exists
 if os.path.exists(test_image_path):
-    # Open the image
     input_image = Image.open(test_image_path)
     
     # resize and np the image
@@ -78,16 +76,13 @@ if os.path.exists(test_image_path):
 else:
     print("img not found")
 
-
-# Assuming the input image is already preprocessed and ready to be inputted to the model
-# For example, let's assume 'input_image' is the preprocessed image tensor
-# input_image = preprocess_your_image_function(your_image)
-
-# Make predictions
+# make predictions
 predictions = model.predict(input_image[None, ...])  # Add batch dimension
 
-# Get the top 5 class predictions
 top_5_predictions = tf.nn.top_k(predictions, k=5)
 
+top_5_values, top_5_indices = top_5_predictions.values.numpy()[0], top_5_predictions.indices.numpy()[0]
+
 for i in range(5):
-    print(styles[top_5_predictions[1][0][i]])
+    print(f"Class: {styles[top_5_indices[i]]}, Confidence: {top_5_values[i] * 100:.2f}%")
+
