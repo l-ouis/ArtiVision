@@ -2,3 +2,4 @@ data/
 og data/
 split/
 saved_models/*
+gen_data/*
