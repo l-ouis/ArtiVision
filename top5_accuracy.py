@@ -122,7 +122,7 @@ for image_name, style in zip(filenames, stylelist):
 
         images.append(input_image)
         img_names.append(image_name)
-        style_strings.append(style) # This is a style string.
+        style_strings.append(style)
         count += 1
     except:
         print(f'Image {image_name} not found')
