@@ -140,7 +140,6 @@ for image_name, style in zip(filenames, stylelist):
             try:
                 predictions = predict(model, image)
                 style_ids = predictions[1]
-                top5_style_ids_total.append(style_ids)
                 correct = False
                 for style_id in style_ids:
                     if style_name == styles[style_id]:
@@ -176,7 +175,10 @@ for image, style_name in zip(images, style_strings):
                 break
         total_guesses += 1
         if correct:
+            top5_style_ids_result.append(1)
             total_correct += 1
+        else:
+            top5_style_ids_result.append(0)
     except:
         print(f'Image {image_name} unable to predict')
     
