@@ -3,6 +3,12 @@ import os
 from PIL import Image
 import numpy as np
 
+import lime
+from lime import lime_image
+
+from matplotlib import pyplot as plt
+from skimage.segmentation import mark_boundaries
+
 import sys
 sys.path.append('code')
 import hyperparameters as hp
@@ -59,7 +65,9 @@ styles = [
 
 
 # Load the Keras model - need to load in the loss fn as well
-model = tf.keras.models.load_model('saved_models/my_model', custom_objects={'loss_fn': Basic.loss_fn})
+
+
+model = tf.keras.layers.TFSMLayer('saved_models/my_model', call_endpoint='serving_default')
 
 
 test_image_path = 'test_images/mountains.jpeg'
@@ -75,6 +83,25 @@ if os.path.exists(test_image_path):
     input_image = input_image / 255.0
 else:
     print("img not found")
+
+
+explainer = lime_image.LimeImageExplainer()
+
+def model_predict(input_image):
+    input_image = input_image.astype(np.float32) / 255.0 
+    predictions = model.predict(input_image)
+    return predictions
+
+explanation = explainer.explain_instance(input_image.astype(np.uint8), 
+                                         model_predict,
+                                         top_labels=5, 
+                                         hide_color=0, 
+                                         num_samples=1000)
+
+temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
+plt.imshow(mark_boundaries(temp / 255.0, mask))
+plt.title('LIME Explanation')
+plt.show()
 
 # make predictions
 def predict(model, input_image):
