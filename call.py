@@ -67,10 +67,10 @@ styles = [
 # Load the Keras model - need to load in the loss fn as well
 
 
-model = tf.keras.layers.TFSMLayer('saved_models/my_model', call_endpoint='serving_default')
+model = tf.keras.models.load_model('saved_models/my_model', custom_objects={'loss_fn': Advanced.loss_fn})
 
 
-test_image_path = 'test_images/mountains.jpeg'
+test_image_path = 'test_images/182552-magical-space-forms-1948.jpg'
 
 if os.path.exists(test_image_path):
     input_image = Image.open(test_image_path)
@@ -92,15 +92,34 @@ def model_predict(input_image):
     predictions = model.predict(input_image)
     return predictions
 
-explanation = explainer.explain_instance(input_image.astype(np.uint8), 
+explanation = explainer.explain_instance(input_image, 
                                          model_predict,
-                                         top_labels=5, 
-                                         hide_color=0, 
-                                         num_samples=1000)
+                                         num_features=10000,
+                                         num_samples=100)
 
-temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
-plt.imshow(mark_boundaries(temp / 255.0, mask))
-plt.title('LIME Explanation')
+img, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, hide_rest=True)
+fig, axs = plt.subplots(1, 4, figsize=(20, 5))
+
+# Display the original input image
+axs[0].imshow(input_image)
+axs[0].set_title('Original Image')
+axs[0].axis('off')
+
+# Display the image returned by LIME
+axs[1].imshow(img)
+axs[1].set_title('LIME Image')
+axs[1].axis('off')
+
+# Display the mask returned by LIME
+axs[2].imshow(mask, cmap='gray')
+axs[2].set_title('LIME Mask')
+axs[2].axis('off')
+
+# Display the original image with the mask applied
+axs[3].imshow(mark_boundaries(img / 255.0, mask))
+axs[3].set_title('Image with LIME Mask')
+axs[3].axis('off')
+
 plt.show()
 
 # make predictions

@@ -68,7 +68,7 @@ model = tf.keras.models.load_model('saved_models/my_model', custom_objects={'los
 def predict(model, input_image):
     predictions = model.predict(input_image[None, ...])  # Add batch dimension
 
-    top_5_predictions = tf.nn.top_k(predictions, k=10)
+    top_5_predictions = tf.nn.top_k(predictions, k=1)
 
     top_5_values, top_5_indices = top_5_predictions.values.numpy()[0], top_5_predictions.indices.numpy()[0]
 
@@ -140,6 +140,7 @@ for image_name, style in zip(filenames, stylelist):
             try:
                 predictions = predict(model, image)
                 style_ids = predictions[1]
+                top5_style_ids_total.append(style_ids)
                 correct = False
                 for style_id in style_ids:
                     if style_name == styles[style_id]:
