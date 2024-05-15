@@ -131,7 +131,7 @@ def main():
     print(f'Test Loss: {results[0]}, Test Accuracy: {results[1]}')
 
     # Save the trained model
-    model.save('saved_model/my_model', save_format="tf")
+    model.save('saved_model/basic.h5')
     
 
 

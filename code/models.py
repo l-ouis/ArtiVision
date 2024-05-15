@@ -13,31 +13,23 @@ class Basic(tf.keras.Model):
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=hp.learning_rate)
         self.architecture = [
               ## Add layers here separated by commas.
-              tf.keras.layers.Conv2D(32, 3, 1, activation='relu', padding='same', input_shape=(hp.img_size, hp.img_size, 3)),
+              tf.keras.layers.Conv2D(8, 3, 1, activation='relu', padding='same', input_shape=(hp.img_size, hp.img_size, 3)),
               tf.keras.layers.BatchNormalization(),
-              tf.keras.layers.Conv2D(32, 3, 1, padding="same",
+              tf.keras.layers.Conv2D(8, 3, 1, padding="same",
                    activation="relu"),
               tf.keras.layers.MaxPool2D(2),
 
-              tf.keras.layers.Conv2D(128, 3, 1, activation='relu', padding='same'),
-              tf.keras.layers.Conv2D(128, 3, 1, padding="same",
+              tf.keras.layers.Conv2D(16, 3, 1, activation='relu', padding='same'),
+              tf.keras.layers.Conv2D(16, 3, 1, padding="same",
                    activation="relu"),
               tf.keras.layers.MaxPool2D(2),
 
-              tf.keras.layers.Conv2D(256, 3, 1, activation='relu', padding='same'),
-              tf.keras.layers.Conv2D(256, 3, 1, activation='relu', padding='same'),
-              tf.keras.layers.MaxPool2D(pool_size=(2, 2)),
-
-              tf.keras.layers.Conv2D(512, 3, 1, padding="same",
-                   activation="relu"),
-              tf.keras.layers.Conv2D(512, 3, 1, padding="same",
-                   activation="relu"),
+              tf.keras.layers.Conv2D(32, 3, 1, activation='relu', padding='same'),
+              tf.keras.layers.Conv2D(32, 3, 1, activation='relu', padding='same'),
           
 
               tf.keras.layers.Flatten(),
-              tf.keras.layers.Dense(128, activation='relu'),
-              tf.keras.layers.Dropout(0.3),
-              tf.keras.layers.Dense(128, activation='relu'),
+              tf.keras.layers.Dense(64, activation='relu'),
               tf.keras.layers.Dropout(0.3),
               tf.keras.layers.Dense(193, activation='softmax')
         ]
