@@ -18,7 +18,7 @@ from models import Basic, Advanced
 with open('code/styles.pkl', 'rb') as f:
     styles = pickle.load(f)
 
-    
+
 # Load the Keras model - need to load in the loss fn as well
 
 
@@ -62,7 +62,7 @@ axs[0].axis('off')
 
 # Display the image returned by LIME
 axs[1].imshow(img)
-axs[1].set_title('LIME Image')
+axs[1].set_title('Masked Image')
 axs[1].axis('off')
 
 # Display the mask returned by LIME
@@ -72,7 +72,7 @@ axs[2].axis('off')
 
 # Display the original image with the mask applied
 axs[3].imshow(mark_boundaries(img / 255.0, mask))
-axs[3].set_title('Image with LIME Mask')
+axs[3].set_title('Mask boundaries')
 axs[3].axis('off')
 
 plt.show()

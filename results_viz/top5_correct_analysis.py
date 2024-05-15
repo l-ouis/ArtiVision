@@ -43,7 +43,7 @@ plt.show()
 
 
 # cluster
-kmeans = KMeans(n_clusters=5, random_state=0).fit(top5_tsne) # change with top5_pca if desired
+kmeans = KMeans(n_clusters=25, random_state=0).fit(top5_tsne) # change with top5_pca if desired
 cluster_labels = kmeans.labels_
 
 # plot
