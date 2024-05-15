@@ -1,5 +1,5 @@
 """
-Homework 5 - CNNs
+Taken from Homework 5 - CNNs
 CS1430 - Computer Vision
 Brown University
 """

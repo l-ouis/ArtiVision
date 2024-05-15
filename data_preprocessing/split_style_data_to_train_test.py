@@ -3,10 +3,9 @@ import shutil
 import random
 
 
-source_folder = 'split'  # Folder containing style folders
-destination_folder = 'data'  # Destination folder
+source_folder = 'split'
+destination_folder = 'data'
 
-# Define the train-test split ratio
 split_ratio = 0.7
 
 
